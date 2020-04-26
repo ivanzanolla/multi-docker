@@ -12,11 +12,24 @@ after_success:
   - docker build -t ivanzanolla/multi-nginx:latest  ./nginx
   - docker build -t ivanzanolla/multi-server:latest   ./server
   - docker build -t ivanzanolla/multi-worker:latest   ./worker
-  - docker build -t ivanzanolla/multi-client:latest   ./client  
-# Log in to docker CLI
+  - docker build -t ivanzanolla/multi-client:latest   ./client
+  # Log in to docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-# Take those images and push them to docker hub
-  - docker push ivanzanolla/multi-nginx:latest 
-  - docker push ivanzanolla/multi-server:latest 
-  - docker push ivanzanolla/multi-worker:latest 
-  - docker push ivanzanolla/multi-client:latest 
+  # Take those images and push them to docker hub
+  - docker push ivanzanolla/multi-nginx:latest
+  - docker push ivanzanolla/multi-server:latest
+  - docker push ivanzanolla/multi-worker:latest
+  - docker push ivanzanolla/multi-client:latest
+
+deploy:
+  edge: true
+  provider: elasticbeanstalk
+  region: us-east-2
+  app: multi-docker
+  env: MultiDocker-env-1
+  bucket_name: elasticbeanstalk-us-east-2-964948240015
+  bucket_path: docker-multi
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY  
